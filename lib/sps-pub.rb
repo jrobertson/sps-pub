@@ -3,26 +3,22 @@
 # file: sps-pub.rb
 
 require 'simplepubsub'
-require 'mqtt'
 
 class SPSPub
   include SimplePubSub
 
-  def self.notice(s,sps_address='sps', mqtt_address='mqtt')
+  def self.notice(s,sps_address='sps',port='59000')
 
     topic, msg = s.split(/:\s*/,2)
-    r = ''
 
-    Client.connect(sps_address) do |client|
-      r = client.publish(topic, msg)
+    Client.connect(sps_address, port, options={}) do |client|
+
+      opt = {stay_connected: false}.merge options
+      puts "about to publish : topic: %s msg: %s" % [topic, msg]
+      client.publish(topic, msg)
+      :stop if opt[:stay_connected] == false
     end
     
-    if topic == 'xmpp' then
-      MQTT::Client.connect(mqtt_address) do |client|
-        client.publish(topic, msg)
-      end
-    end
-    r
   end
   
   def self.listen(topic='#', sps_address='sps')
