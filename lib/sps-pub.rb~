@@ -7,7 +7,7 @@ require 'ws' # from gem 'simpleblockingwebsocketclient'
 
 
 
-class SPS
+class SPSPub
   include SimplePubSub
 
   def self.notice(s, address: 'sps', port: '59000')

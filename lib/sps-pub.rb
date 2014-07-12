@@ -6,9 +6,18 @@ require 'simplepubsub'
 require 'ws' # from gem 'simpleblockingwebsocketclient'
 
 
-
 class SPSPub
   include SimplePubSub
+
+  def initialize(address: 'sps', port: '59000')
+    @client = Net::WS.new "ws://%s:%s/" % [address, port]
+  end
+
+  def notice(s)
+    @client.send s
+  end
+
+  alias publish notice
 
   def self.notice(s, address: 'sps', port: '59000')
 
