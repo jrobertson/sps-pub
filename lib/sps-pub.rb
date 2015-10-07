@@ -17,9 +17,9 @@ class SPSPub
 
   alias publish notice
 
-  def self.notice(s, address: 'sps', port: '59000')
+  def self.notice(s, host='sps', address: host, port: '59000')
 
-    client = Net::WS.new "ws://%s:%s/" % [address, port]
+    client = Net::WS.new "ws://%s:%s/" % [host, port]
     client.send s
   end
 
