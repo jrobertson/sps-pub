@@ -17,10 +17,29 @@ class SPSPub
 
   alias publish notice
 
-  def self.notice(s, host='sps', address: host, port: '59000')
+  def self.notice(s, host='sps', address: host, port: '59000', retries: 3)
 
-    client = Net::WS.new "ws://%s:%s/" % [host, port]
-    client.send s
+    retry_attmpts = 0
+    client = Net::WS.new "ws://%s:%s/" % [host, port]    
+    
+    begin
+      
+      client.send s
+      
+    rescue Errno::ETIMEDOUT => e
+      
+      if retries and retry_attempts < retries then
+        
+        retries += 1
+        puts 'SPSPub timeout retrying ...'
+        retry
+        
+      else
+        puts 'SPSPub timeout while trying to contact the host'        
+      end
+      
+    end
+
   end
 
   def self.pub(s, address: 'sps', port: '59000')
