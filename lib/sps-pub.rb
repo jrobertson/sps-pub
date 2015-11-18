@@ -19,7 +19,7 @@ class SPSPub
 
   def self.notice(s, host='sps', address: host, port: '59000', retries: 3)
 
-    retry_attmpts = 0
+    retry_attempts = 0
     client = Net::WS.new "ws://%s:%s/" % [host, port]    
     
     begin
@@ -39,6 +39,8 @@ class SPSPub
       end
       
     end
+    
+    :message_sent
 
   end
 
