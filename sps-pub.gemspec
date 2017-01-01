@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = 'sps-pub'
-  s.version = '0.4.3'
+  s.version = '0.5.1'
   s.summary = 'A SimplePubSub client for publishing messages in 1 line of code.'
   s.authors = ['James Robertson']
   s.files = Dir['lib/sps-pub.rb']
-  s.add_runtime_dependency('simpleblockingwebsocketclient', '~> 0.43', '>=0.43')
+  s.add_runtime_dependency('websocket-client-simple', '~> 0.3', '>=0.3.0')
   s.signing_key = '../privatekeys/sps-pub.pem'
   s.cert_chain  = ['gem-public_cert.pem']
   s.license = 'MIT'

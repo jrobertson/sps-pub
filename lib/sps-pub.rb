@@ -2,13 +2,17 @@
 
 # file: sps-pub.rb
 
-require 'ws'
+require 'websocket-client-simple'
 
 
 class SPSPub
 
-  def initialize(address: 'sps', port: '59000')
-    @client = Net::WS.new "ws://%s:%s/" % [address, port]
+  def initialize(host: 'sps', address: host, port: '59000')
+    
+    
+    @client = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]    
+    sleep 0.02
+
   end
 
   def notice(s)
@@ -17,10 +21,13 @@ class SPSPub
 
   alias publish notice
 
-  def self.notice(s, host='sps', address: host, port: '59000', retries: 3)
+  def self.notice(s, hostx='sps', host: hostx, address: host, 
+                  port: '59000', retries: 3)
 
     retry_attempts = 0
-    client = Net::WS.new "ws://%s:%s/" % [host, port]    
+
+    client = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]
+    sleep 0.02
     
     begin
       
@@ -44,11 +51,11 @@ class SPSPub
 
   end
 
-  def self.pub(s, address: 'sps', port: '59000')
+  def self.pub(s, address: 'sps', host: address, port: '59000')
     self.notice(s, address: 'sps', port: '59000')
   end
 
-  def self.publish(s, address: 'sps', port: '59000')
+  def self.publish(s, address: 'sps', host: address, port: '59000')
     self.notice(s, address: 'sps', port: '59000')
   end
 
