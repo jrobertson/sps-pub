@@ -24,28 +24,31 @@ class SPSPub
   def self.notice(s, hostx='sps', host: hostx, address: host, 
                   port: '59000', retries: 3)
 
-    retry_attempts = 0
 
-    client = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]
-    sleep 0.02
-    
-    begin
+    ws = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]
+     
+    ws.on :open do    
       
-      client.send s
+      retry_attempts = 0      
       
-    rescue Errno::ETIMEDOUT => e
-      
-      if retries and retry_attempts < retries then
+      begin
         
-        retries += 1
-        puts 'SPSPub timeout retrying ...'
-        retry
+        ws.send s
         
-      else
-        puts 'SPSPub timeout while trying to contact the host'        
+      rescue Errno::ETIMEDOUT => e
+        
+        if retries and retry_attempts < retries then
+          
+          retries += 1
+          puts 'SPSPub timeout retrying ...'
+          retry
+          
+        else
+          puts 'SPSPub timeout while trying to contact the host'        
+        end
+        
       end
-      
-    end
+    end    
     
     :message_sent
 

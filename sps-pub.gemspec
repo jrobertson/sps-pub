@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'sps-pub'
-  s.version = '0.5.1'
+  s.version = '0.5.2'
   s.summary = 'A SimplePubSub client for publishing messages in 1 line of code.'
   s.authors = ['James Robertson']
   s.files = Dir['lib/sps-pub.rb']
