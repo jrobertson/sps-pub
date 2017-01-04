@@ -34,7 +34,6 @@ class SPSPub
       begin
         
         ws.send s
-        sleep 0.02 # give the above message time to be sent
         
       rescue Errno::ETIMEDOUT => e
         
@@ -50,7 +49,9 @@ class SPSPub
 
       end
     end    
-
+    
+    sleep 0.01 # give the above message time to be sent
+    
     :message_sent
 
   end
