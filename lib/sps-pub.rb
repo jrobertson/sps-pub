@@ -5,6 +5,10 @@
 require 'websocket-client-simple'
 
 
+class SPSPubError < Exception
+end
+
+
 class SPSPub
 
   def initialize(host: 'sps', address: host, port: '59000')
@@ -22,10 +26,33 @@ class SPSPub
   alias publish notice
 
   def self.notice(s, hostx='sps', host: hostx, address: host, 
-                  port: '59000', retries: 3)
+                  port: '59000', retries: 3, hosts: [])
 
 
-    ws = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]
+    ws = nil
+    begin
+
+      if hosts.any? then
+        address, portx = hosts.first.split(':', 2)
+
+        portx ||= port
+        port = portx
+      end
+
+      ws = WebSocket::Client::Simple.connect "ws://%s:%s/" % [address, port]
+    rescue Errno::ECONNREFUSED => e
+      
+      if hosts.any? then
+        hosts.rotate!
+        puts 'retrying ...' + hosts.inspect
+        sleep 0.1
+        #self.notice s, hosts: hosts.rotate
+        retry
+      else
+        raise SPSPubError, "connection refused"
+      end
+      
+    end
      
     ws.on :open do    
       
@@ -34,7 +61,11 @@ class SPSPub
       begin
         
         ws.send s
-        
+      
+      #exception
+
+      rescue Exception => e
+        puts 'dig it'
       rescue Errno::ETIMEDOUT => e
         
         if retries and retry_attempts < retries then
@@ -46,6 +77,7 @@ class SPSPub
         else
           puts 'SPSPub timeout while trying to contact the host'        
         end
+        
 
       end
     end    
